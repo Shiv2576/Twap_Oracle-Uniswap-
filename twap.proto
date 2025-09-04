@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package twaporacle;
+
+service TwapService {
+  rpc StreamAll (StreamRequest) returns (stream StreamResponse);
+}
+
+message StreamRequest {
+  int32 interval = 1;
+}
+
+message TwapData {
+  int32 window = 1;
+  double twap_price = 2;
+}
+
+message StreamResponse {
+  double spot_price = 1;
+  repeated TwapData twaps = 2;
+  string timestamp = 3;
+}
