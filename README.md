@@ -47,33 +47,10 @@ ws://localhost:8080/ws?window=3600   # 60 minutes
 
 ## Example Clients
 
-### Python
-
-```python
-import asyncio
-import websockets
-
-async def listen():
-    url = "ws://localhost:8080/ws?window=300"
-    async with websockets.connect(url) as ws:
-        while True:
-            msg = await ws.recv()
-            print(msg)
-
-asyncio.run(listen())
-```
-
 ### Go
 
 ```go
 conn, _, err := websocket.Dial(context.Background(), "ws://localhost:8080/ws?window=300", nil)
-```
-
-### JavaScript
-
-```javascript
-const ws = new WebSocket("ws://localhost:8080/ws?window=300");
-ws.on("message", (data) => console.log(data.toString()));
 ```
 
 ## API Reference
@@ -92,24 +69,3 @@ ws.on("message", (data) => console.log(data.toString()));
 - `1800`: 30-minute TWAP
 - `3600`: 1-hour TWAP
 
-## Use Cases
-
-- **Arbitrage Detection**: Compare spot vs TWAP prices to identify profit opportunities
-- **Slippage Simulation**: Use TWAP data to estimate swap execution with minimal slippage
-- **Market Analysis**: Monitor price trends across different time windows
-- **Trading Bots**: Real-time data feed for algorithmic trading strategies
-
-## Requirements
-
-- Go 1.19 or higher
-- Internet connection for Uniswap data
-- WebSocket-compatible client
-
-## Contributing
-
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`
