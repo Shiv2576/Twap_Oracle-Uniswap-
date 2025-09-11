@@ -1,4 +1,4 @@
-package uniswap
+package uniswapWeth
 
 import (
 	"context"
@@ -95,6 +95,30 @@ func calculatePriceFromTick(tick float64) *big.Float {
 	return new(big.Float).SetFloat64(priceFloat)
 
 }
+
+// func GetTWAPPrice(ctx context.Context, backend bind.ContractBackend, windowSeconds uint32) (*big.Float, error) {
+// 	twapPrice, err := CalculateTWAP(ctx, backend, windowSeconds)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to calculate TWAP: %w", err)
+// 	}
+
+// 	decimals0 := 6 //USDC
+// 	decimals1 := 8 //WBTC
+
+// 	usdTwapPrice := NormalizePrice(twapPrice, decimals0, decimals1)
+// 	return usdTwapPrice, nil
+// }
+
+// func NormalizePrice(rawPrice *big.Float, decimals0, decimals1 int) *big.Float {
+// 	exp := decimals1 - decimals0
+
+// 	factor := new(big.Float).SetInt(
+// 		new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(exp)), nil),
+// 	)
+// 	normalized := new(big.Float).Quo(factor, rawPrice)
+
+// 	return normalized
+// }
 
 func GetTWAPPrice(ctx context.Context, backend bind.ContractBackend, windowSeconds uint32) (*big.Float, error) {
 	twapPrice, err := CalculateTWAP(ctx, backend, windowSeconds)
