@@ -1,4 +1,4 @@
-package uniswap
+package uniswapWbtc
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-var PoolAddress = common.HexToAddress("0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8")
+var PoolAddress = common.HexToAddress("0x9a772018fbd77fcd2d25657e5c547baff3fd7d16")
 
 // Just the slot0 function ABI
 const SLOT0_ABI = `[{
@@ -42,7 +42,7 @@ type Slot0 struct {
 }
 
 func SpotPriceWithStruct(ctx context.Context, backend bind.ContractBackend) (*big.Float, error) {
-	// Parse the ABI directly from string
+
 	contractABI, err := abi.JSON(strings.NewReader(SLOT0_ABI))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse ABI: %w", err)
@@ -63,7 +63,6 @@ func SpotPriceWithStruct(ctx context.Context, backend bind.ContractBackend) (*bi
 		return nil, fmt.Errorf("eth_call failed: %w", err)
 	}
 
-	// Unpack into struct
 	var slot0Result Slot0
 	err = contractABI.UnpackIntoInterface(&slot0Result, "slot0", res)
 	if err != nil {
@@ -72,10 +71,10 @@ func SpotPriceWithStruct(ctx context.Context, backend bind.ContractBackend) (*bi
 
 	rawPrice := new(big.Float).SetInt(slot0Result.SqrtPriceX96)
 	rawPrice.Mul(rawPrice, rawPrice)
-	scale := new(big.Float).SetInt(new(big.Int).Lsh(big.NewInt(1), 192)) // safer than math.Pow
+	scale := new(big.Float).SetInt(new(big.Int).Lsh(big.NewInt(1), 192))
 	rawPrice.Quo(rawPrice, scale)
 
-	usdPrice := NormalizePrice(rawPrice, 6, 18)
+	usdPrice := NormalizePrice(rawPrice, 6, 8)
 
 	return usdPrice, nil
 }
