@@ -68,3 +68,4 @@ conn, _, err := websocket.Dial(context.Background(), "ws://localhost:8080/ws?win
 - `900`: 15-minute TWAP
 - `1800`: 30-minute TWAP
 - `3600`: 1-hour TWAP
+remote version

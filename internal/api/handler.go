@@ -9,8 +9,11 @@ import (
 	"strconv"
 	"time"
 
+	"twaporacle/internal/uniswapAave"
 	"twaporacle/internal/uniswapDai"
 	"twaporacle/internal/uniswapLink"
+	"twaporacle/internal/uniswapOhm"
+	"twaporacle/internal/uniswapPepe"
 	"twaporacle/internal/uniswapUni"
 	"twaporacle/internal/uniswapWbtc"
 	"twaporacle/internal/uniswapWeth"
@@ -130,20 +133,74 @@ func WsHandler(backend bind.ContractBackend) http.HandlerFunc {
 				}
 			}
 
-			//UNI/LINK
+			//UNI/ETH
 			UniSpot, err := uniswapUni.SpotPriceWithStruct(ctx, backend)
 			if err != nil {
-				log.Printf("Error fetching YES spot price: %v", err)
+				log.Printf("Error fetching UNI spot price: %v", err)
 			} else {
 				UniTwap, err := uniswapUni.GetTWAPPrice(ctx, backend, window)
 				if err != nil {
-					log.Printf("Error fetching YES TWAP price: %v", err)
+					log.Printf("Error fetching UNI TWAP price: %v", err)
 				} else {
 					uniSlippage := CalculateSlippage(UniSpot, UniTwap)
 					pools["UNI/ETH"] = PoolPrice{
 						SpotPrice: formatBigFloatUni(UniSpot),
 						TwapPrice: formatBigFloatUni(UniTwap),
 						Slippage:  formatBigFloatSlip(uniSlippage),
+					}
+				}
+			}
+
+			//AAVE/ETH
+			AaveSpot, err := uniswapAave.SpotPriceWithStruct(ctx, backend)
+			if err != nil {
+				log.Printf("Error fetching TRX spot price: %v", err)
+			} else {
+				AaveTwap, err := uniswapAave.GetTWAPPrice(ctx, backend, window)
+				if err != nil {
+					log.Printf("Error fetching TRX TWAP price: %v", err)
+				} else {
+					AaveSlippage := CalculateSlippage(AaveSpot, AaveTwap)
+					pools["AAVE/ETH"] = PoolPrice{
+						SpotPrice: formatBigFloatUni(AaveSpot),
+						TwapPrice: formatBigFloatUni(AaveTwap),
+						Slippage:  formatBigFloatSlip(AaveSlippage),
+					}
+				}
+			}
+
+			//PEPE/ETH
+			PepeSpot, err := uniswapPepe.SpotPriceWithStruct(ctx, backend)
+			if err != nil {
+				log.Printf("Error fetching TRX spot price: %v", err)
+			} else {
+				PepeTwap, err := uniswapPepe.GetTWAPPrice(ctx, backend, window)
+				if err != nil {
+					log.Printf("Error fetching TRX TWAP price: %v", err)
+				} else {
+					PepeSlippage := CalculateSlippage(PepeSpot, PepeTwap)
+					pools["PEPE/ETH"] = PoolPrice{
+						SpotPrice: formatBigFloatPepe(PepeSpot),
+						TwapPrice: formatBigFloatPepe(PepeTwap),
+						Slippage:  formatBigFloatSlip(PepeSlippage),
+					}
+				}
+			}
+
+			//OHM/ETH
+			OhmSpot, err := uniswapOhm.SpotPriceWithStruct(ctx, backend)
+			if err != nil {
+				log.Printf("Error fetching TRX spot price: %v", err)
+			} else {
+				OhmTwap, err := uniswapOhm.GetTWAPPrice(ctx, backend, window)
+				if err != nil {
+					log.Printf("Error fetching TRX TWAP price: %v", err)
+				} else {
+					OhmSlippage := CalculateSlippage(OhmSpot, OhmTwap)
+					pools["OHM/ETH"] = PoolPrice{
+						SpotPrice: formatBigFloatPepe(OhmSpot),
+						TwapPrice: formatBigFloatPepe(OhmTwap),
+						Slippage:  formatBigFloatSlip(OhmSlippage),
 					}
 				}
 			}
@@ -178,6 +235,10 @@ func formatBigFloatWETH(f *big.Float) string {
 
 func formatBigFloatUni(f *big.Float) string {
 	return f.Text('f', 8)
+}
+
+func formatBigFloatPepe(f *big.Float) string {
+	return f.Text('f', 18)
 }
 
 func formatBigFloatSlip(f *big.Float) string {
